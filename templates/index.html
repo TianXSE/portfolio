@@ -1,0 +1,123 @@
+{#
+  AI-ASSISTED FILE (CS50x final project): written by Claude (Anthropic).
+  Changed in Stage 1 feedback round: two-column hero with photo slot, icon contact tiles, equal-width hero buttons.
+  TO CHANGE THE INTRO TEXT: edit the paragraph with class="lead-text" below.
+  Poster round: profile.jpg (cropped from Ian's photo) and the three card pictures (cs-topic.png, math-topic.png, piano-topic.png: illustrations of each topic, not of the demos) are in static/image/.
+  TO SWAP ANY IMAGE: replace the file in static/image/ with the same name (or change src= here).
+  Text adapted from Ian's pset 8 homepage and lightly rephrased.
+#}
+{% extends "layout.html" %}
+{% import "_site.html" as s %}
+{% from "_components.html" import picture, social_link %}
+
+{% block title %}Home{% endblock %}
+{% block theme %}index{% endblock %}
+
+{% block main %}
+<div class="hero-wrap">
+    {# Decorative shapes: they slide in once on page load (pure CSS, see theme.css) #}
+    <div class="hero-stage" aria-hidden="true">
+        <span class="deco deco-disc"></span>
+        <span class="deco deco-frame"></span>
+        <span class="deco deco-dots"></span>
+    </div>
+
+    <div class="wrap">
+        <section class="hero hero-split" aria-labelledby="hero-title">
+            <div class="hero-copy">
+            <h1 id="hero-title">Hi, I'm {{ s.site.name }}.</h1>
+            <p class="lead-text">
+                I'm an aspiring computer scientist who learns by building. A terminal
+                Pacman, a 3D renderer and a chord player are my proof that I can make
+                something work, and explain how it does.
+            </p>
+
+            {# .hero-actions = three equal-width buttons (see theme.css) #}
+            <div class="hero-actions mt-4">
+                <a class="btn btn-accent" href="#projects">See my projects</a>
+
+                {# CV button: stays disabled until cv_url is set in _site.html #}
+                {% if s.site.cv_url %}
+                <a class="btn btn-ghost" href="{{ s.site.cv_url }}" target="_blank" rel="noreferrer">View CV (PDF)</a>
+                {% else %}
+                <button class="btn btn-ghost" type="button" disabled>CV coming soon</button>
+                {% endif %}
+
+                <button class="btn btn-ghost" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#about-me"
+                        aria-expanded="false" aria-controls="about-me">
+                    <span class="toggle-closed">Get to know me</span>
+                    <span class="toggle-open">Show less</span>
+                </button>
+            </div>
+
+            <div class="collapse" id="about-me">
+                <div class="about-panel">
+                    <h2>A bit more about me</h2>
+                    <p>
+                        I'm exploring computer science by making things, starting with
+                        small programs and growing into bigger ones. Before that I spent
+                        years on math and physics olympiads, which taught me to break a
+                        hard problem into rules. Outside of code I play piano, usually
+                        when I need a break from the screen.
+                    </p>
+                </div>
+            </div>
+            </div>{# end hero-copy #}
+
+            {# Photo slot: save a photo as static/image/profile.jpg (optional) #}
+            <div class="hero-visual">
+                <div class="photo-cluster">
+                    <span class="pc-block" aria-hidden="true"></span>
+                    <span class="pc-ring" aria-hidden="true"></span>
+                    {{ picture("Ian", src="image/profile.jpg", alt="Portrait of Ian") }}
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="section" id="projects" aria-labelledby="projects-title">
+    <div class="wrap">
+        <h2 id="projects-title" class="mb-4">Pick a page to explore</h2>
+        <div class="project-grid">
+
+            <a class="project-card theme-cs" href="{{ url_for('cs') }}">
+                {{ picture("Computer Science", src="image/cs-topic.png", alt="Python code in an editor and its output in a terminal") }}
+                <h3>Computer Science</h3>
+                <p>My tools, my learning style, and a Pacman game I wrote for the terminal.</p>
+                <span class="chip chip-accent">Interactive demo</span>
+            </a>
+
+            <a class="project-card theme-math" href="{{ url_for('math_physics') }}">
+                {{ picture("Math & Physics", src="image/math-topic.png", alt="A sine wave, an orbit and famous equations on a blueprint grid") }}
+                <h3>Math &amp; Physics</h3>
+                <p>Why I like them, and a 3D renderer that turns equations into spinning shapes.</p>
+                <span class="chip chip-accent">Interactive demo</span>
+            </a>
+
+            <a class="project-card theme-piano" href="{{ url_for('piano') }}">
+                {{ picture("Piano", src="image/piano-topic.png", alt="Piano keys and sheet music notes") }}
+                <h3>Piano</h3>
+                <p>What I play, what I'm learning, and a chord player you can try.</p>
+                <span class="chip chip-accent">Interactive demo</span>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0" aria-labelledby="contact-title">
+    <div class="wrap contact-band">
+        <div>
+            <h2 id="contact-title">Find me</h2>
+            <p class="contact-intro">Questions, feedback, or just want to talk code? Reach out.</p>
+        </div>
+        <div class="contact-tiles">
+            {{ social_link("github", s.site.github, "GitHub", "TianXSE", tile=true) }}
+            {{ social_link("linkedin", s.site.linkedin, "LinkedIn", "Sebasthian Nathanael", tile=true) }}
+            {{ social_link("email", "mailto:" ~ s.site.email, "Email", s.site.email, tile=true) }}
+        </div>
+    </div>
+</section>
+{% endblock %}

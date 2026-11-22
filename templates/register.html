@@ -1,0 +1,58 @@
+{#
+  AI-ASSISTED FILE (CS50x final project): written by Claude (Anthropic).
+  The Register page. The form is sent by static/js/auth.js as JSON to your /register route (POST).
+  Flask needs: @app.route("/register", methods=["GET", "POST"]) where GET returns render_template("register.html").
+  The checklist is only a hint; your route checks the same rules again (the browser can lie).
+#}
+{% extends "layout.html" %}
+{% block title %}Register{% endblock %}
+{% block theme %}index{% endblock %}
+{% block head_extra %}<link href="{{ url_for('static', filename='css/auth.css') }}" rel="stylesheet">{% endblock %}
+
+{% block main %}
+<div class="wrap auth-wrap">
+    <section class="auth-card" aria-labelledby="auth-title">
+        <div class="auth-bar">
+            <span class="demo-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <h1 id="auth-title">Create an account</h1>
+        </div>
+        <div class="auth-body">
+            <p class="auth-note">An account is only used to save your Pacman score under your name. No email needed.</p>
+            <p id="auth-error" class="auth-error" role="alert" hidden></p>
+            <form id="auth-form" data-endpoint="{{ url_for('register') }}" data-next="{{ url_for('index') }}" autocomplete="on">
+                <div class="auth-field">
+                    <label for="auth-username">Username</label>
+                    <input class="form-control" id="auth-username" name="username" type="text"
+                           autocomplete="username" autocapitalize="none" spellcheck="false" required
+                           minlength="3" maxlength="16" aria-describedby="auth-username-hint">
+                    <p class="auth-hint" id="auth-username-hint">3 to 16 characters: letters, digits, _ - .</p>
+                </div>
+                <div class="auth-field">
+                    <label for="auth-password">Password</label>
+                    <input class="form-control" id="auth-password" name="password" type="password"
+                           autocomplete="new-password" required minlength="8" maxlength="128" aria-describedby="pw-rules">
+                </div>
+                <ul id="pw-rules" class="pw-rules">
+                    <li data-rule="length">8 to 128 characters</li>
+                    <li data-rule="upper">An uppercase letter</li>
+                    <li data-rule="digit">A digit</li>
+                    <li data-rule="special">A special character, like ! or #</li>
+                    <li data-rule="differs">Not the same as your username</li>
+                </ul>
+                <div class="auth-field">
+                    <label for="auth-confirm">Repeat password</label>
+                    <input class="form-control" id="auth-confirm" name="confirm" type="password"
+                           autocomplete="new-password" required maxlength="128">
+                </div>
+                <label class="auth-show"><input type="checkbox" id="auth-show"> Show passwords</label>
+                <button class="btn btn-accent auth-submit" type="submit">Create account</button>
+            </form>
+            <p class="auth-switch">Already have an account? <a class="auth-switch-link" href="{{ url_for('login') }}">Log in</a></p>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/auth.js') }}" defer></script>
+{% endblock %}

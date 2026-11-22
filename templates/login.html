@@ -1,0 +1,43 @@
+{#
+  AI-ASSISTED FILE (CS50x final project): written by Claude (Anthropic).
+  The Log in page. The form is sent by static/js/auth.js as JSON to your /login route (POST).
+  Flask needs: @app.route("/login", methods=["GET", "POST"]) where GET returns render_template("login.html").
+#}
+{% extends "layout.html" %}
+{% block title %}Log in{% endblock %}
+{% block theme %}index{% endblock %}
+{% block head_extra %}<link href="{{ url_for('static', filename='css/auth.css') }}" rel="stylesheet">{% endblock %}
+
+{% block main %}
+<div class="wrap auth-wrap">
+    <section class="auth-card" aria-labelledby="auth-title">
+        <div class="auth-bar">
+            <span class="demo-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <h1 id="auth-title">Log in</h1>
+        </div>
+        <div class="auth-body">
+            <p class="auth-note">Log in to save your Pacman score under your name.</p>
+            <p id="auth-error" class="auth-error" role="alert" hidden></p>
+            <form id="auth-form" data-endpoint="{{ url_for('login') }}" data-next="{{ url_for('index') }}" autocomplete="on">
+                <div class="auth-field">
+                    <label for="auth-username">Username</label>
+                    <input class="form-control" id="auth-username" name="username" type="text"
+                           autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="16">
+                </div>
+                <div class="auth-field">
+                    <label for="auth-password">Password</label>
+                    <input class="form-control" id="auth-password" name="password" type="password"
+                           autocomplete="current-password" required maxlength="128">
+                </div>
+                <label class="auth-show"><input type="checkbox" id="auth-show"> Show password</label>
+                <button class="btn btn-accent auth-submit" type="submit">Log in</button>
+            </form>
+            <p class="auth-switch">No account yet? <a class="auth-switch-link" href="{{ url_for('register') }}">Register</a></p>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/auth.js') }}" defer></script>
+{% endblock %}

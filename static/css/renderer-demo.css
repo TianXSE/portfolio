@@ -1,0 +1,80 @@
+/*
+  AI-ASSISTED FILE (CS50x final project): written by Claude (Anthropic).
+  Styles for the 3D renderer demo on the Math & Physics page (loaded only there).
+  Everything is scoped under .renderer and uses the colours from theme.css.
+*/
+
+.renderer {
+    container-type: inline-size;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: clamp(0.9rem, 2vw, 1.4rem);
+}
+.renderer > * { min-width: 0; }
+
+/* ---------- controls ---------- */
+.renderer .rd-controls { display: grid; gap: 0.9rem; align-content: start; }
+
+.renderer label, .renderer .rd-label {
+    display: block; margin: 0 0 0.35rem;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; color: var(--text);
+}
+.renderer .rd-row { display: flex; gap: 0.6rem; align-items: stretch; }
+.renderer input[type="text"] {
+    flex: 1 1 auto; min-width: 0;
+    padding: 0.55rem 0.7rem;
+    background: var(--surface-2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 5px;
+    font-family: var(--font-mono); font-size: 0.9rem;
+}
+.renderer input[type="text"]:focus-visible { outline: 3px solid var(--accent-text); outline-offset: 2px; border-color: var(--accent); }
+.renderer .rd-hint { margin: 0.4rem 0 0; color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+
+.renderer .btn { font-size: 0.85rem; padding: 0.5rem 1rem; white-space: nowrap; }
+.renderer .btn:disabled { opacity: 0.55; cursor: progress; box-shadow: none; }
+
+.renderer .rd-examples { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.renderer .rd-example {
+    padding: 0.35rem 0.75rem;
+    background: var(--surface-2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 999px;
+    font-family: var(--font-mono); font-size: 0.78rem; cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+}
+.renderer .rd-example:hover { border-color: var(--accent); background: var(--accent-dim); }
+
+.renderer input[type="range"] { width: 100%; accent-color: var(--accent); }
+.renderer output { color: var(--accent-text); font-weight: 700; }
+
+.renderer .rd-status {
+    margin: 0; min-height: 2.9em;
+    color: var(--accent-text);
+    font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.45;
+}
+.renderer .rd-status.is-error { color: #f08a80; }
+
+/* ---------- display ---------- */
+.renderer .rd-display {
+    display: flex; justify-content: center; align-items: center;
+    padding: 0.75rem;
+    background: #15171a; border: 1px solid var(--line); border-radius: 8px;
+    min-height: 200px;
+}
+.renderer canvas { display: block; max-width: 100%; }
+
+/* wide demo: controls on the left, picture on the right */
+@container (min-width: 760px) {
+    .renderer { grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 1.5rem; }
+    .renderer .rd-display { order: 2; }
+}
+
+/* ---------- style (flat / donut) switch ---------- */
+.renderer .rd-mode { margin: 0; padding: 0; border: 0; min-width: 0; }
+.renderer .rd-mode legend { float: none; width: auto; margin: 0 0 0.35rem; padding: 0; font-size: 0.78rem; }
+.renderer .rd-radio {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    margin: 0 1rem 0.2rem 0; cursor: pointer;
+    font-family: var(--font-body); font-size: 0.9rem; letter-spacing: 0;
+}
+.renderer .rd-radio input { accent-color: var(--accent); width: 1rem; height: 1rem; margin: 0; }

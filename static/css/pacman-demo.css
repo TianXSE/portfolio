@@ -1,0 +1,101 @@
+/*
+ * pacman-demo.css  -  AI-ASSISTED FILE (CS50x final project)
+ * Styles for the Pac-Man demo. Uses the site's CSS variables when they exist
+ * (--bg, --text, --accent) and falls back to the charcoal / off-white / red theme.
+ */
+.pm-widget {
+  --pm-bg: var(--bg, #1c1e22);
+  --pm-panel: #15171a;
+  --pm-text: var(--text, #ece8e1);
+  --pm-accent: var(--accent, #e8554a);
+  max-width: 960px;
+  margin: 0 auto;
+  background: var(--pm-panel);
+  border: 1px solid rgba(236, 232, 225, .12);
+  border-radius: 10px;
+  overflow: hidden;
+  color: var(--pm-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.pm-hud {
+  display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; align-items: center;
+  padding: .55rem .9rem; font-size: .8rem; letter-spacing: .04em;
+  background: rgba(236, 232, 225, .04);
+  border-bottom: 1px solid rgba(236, 232, 225, .1);
+}
+.pm-hud b { font-weight: 600; color: #fff; margin-left: .3rem; }
+.pm-lives { margin-left: auto; color: var(--pm-accent); letter-spacing: .15em; }
+
+.pm-stage { position: relative; line-height: 0; background: #101216; }
+.pm-canvas { display: block; width: 100%; height: auto; outline: none; }
+
+.pm-overlay {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .6rem; padding: 1rem;
+  text-align: center; line-height: 1.4; cursor: pointer;
+  background: rgba(16, 18, 22, .82);
+}
+.pm-overlay.pm-hidden { display: none; }
+.pm-overlay-title { font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 700; letter-spacing: .12em; color: var(--pm-accent); }
+.pm-overlay-text { font-size: .95rem; max-width: 34rem; }
+.pm-overlay-hint { font-size: .8rem; opacity: .7; }
+.pm-extra:empty { display: none; }
+.pm-extra { cursor: default; line-height: 1.4; }
+
+.pm-help { padding: .5rem .9rem; font-size: .72rem; opacity: .6; border-top: 1px solid rgba(236, 232, 225, .1); }
+
+/* inside the site's demo_slot: the slot already draws the frame, so the widget goes borderless */
+.demo-live .pm-widget { max-width: none; margin: 0; border: 0; border-radius: 0; background: var(--surface-2, #15171a); }
+
+/* real screenshot as the phone poster (demo_slot poster_src) */
+.demo-poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #15171a; }
+
+/* ---------- HUD tools (sound / skin buttons) ---------- */
+.pm-tools { display: inline-flex; gap: .4rem; }
+.pm-lives { margin-left: auto; }
+.pm-btn {
+  font: inherit; font-size: .72rem; letter-spacing: .06em; cursor: pointer;
+  color: var(--pm-text); background: transparent;
+  border: 1px solid rgba(236, 232, 225, .25); border-radius: 6px; padding: .2rem .55rem;
+}
+.pm-btn:hover { border-color: var(--pm-accent); color: #fff; }
+.pm-btn:disabled { opacity: .5; cursor: default; }
+
+/* ---------- terminal skin: green-on-black, scanlines, a little glow ---------- */
+.pm-widget[data-skin="terminal"] .pm-hud { color: var(--accent-text, #52c493); text-shadow: 0 0 6px color-mix(in srgb, var(--accent, #3fb27f) 45%, transparent); }
+.pm-widget[data-skin="terminal"] .pm-hud b { color: var(--text, #ece8e1); }
+.pm-widget[data-skin="terminal"] .pm-stage { background: #0a0d0c; }
+.pm-widget[data-skin="terminal"] .pm-stage::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.20) 2px 3px),
+    radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,.45) 100%);
+}
+.pm-widget[data-skin="terminal"] .pm-overlay-title::before { content: "$ "; opacity: .7; }
+.pm-overlay { z-index: 2; }
+
+/* ---------- game-over form ---------- */
+.pm-extra { display: flex; flex-direction: column; align-items: center; gap: .6rem; }
+.pm-form { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: center; }
+.pm-input {
+  font: inherit; font-size: .9rem; width: 12rem; max-width: 70vw; padding: .35rem .6rem;
+  color: var(--pm-text); background: #0d0f12; border: 1px solid rgba(236, 232, 225, .3); border-radius: 6px;
+}
+.pm-input:focus-visible { outline: 2px solid var(--pm-accent); outline-offset: 2px; }
+.pm-msg { margin: 0; min-height: 1.2em; font-size: .85rem; color: var(--accent-text, #52c493); }
+
+/* ---------- leaderboard panel ---------- */
+.pm-board { padding: 1rem 1.1rem 1.2rem; border-top: 1px solid rgba(236, 232, 225, .12); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--text, #ece8e1); }
+.pm-board:empty { display: none; }
+.pm-board-title { font-size: .95rem; letter-spacing: .08em; margin: 0 0 .6rem; color: var(--accent-text, #52c493); }
+.pm-board-note { margin: 0; font-size: .85rem; opacity: .7; }
+.pm-board-list { list-style: none; counter-reset: rank; margin: 0; padding: 0; display: grid; gap: .15rem; max-width: 28rem; }
+.pm-board-list li { counter-increment: rank; display: grid; grid-template-columns: 2.2rem 1fr 2.4rem auto; gap: .6rem; font-size: .88rem; padding: .15rem 0; border-bottom: 1px dashed rgba(236, 232, 225, .1); }
+.pm-board-list li::before { content: counter(rank) "."; opacity: .55; }
+.pm-b-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm-b-level { opacity: .55; }
+.pm-b-score { font-weight: 600; }
+
+/* login round: links in the game-over message for guests */
+.pm-link { color: var(--accent-text); text-decoration: underline; }

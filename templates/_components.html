@@ -1,0 +1,101 @@
+{#
+  AI-ASSISTED FILE (CS50x final project): written by Claude (Anthropic).
+  Changed in Stage 1 feedback round: added social_link and lang_chip.
+  Changed in Stage 2 (piano): demo_slot can now hold a live demo.
+  Changed in Stage 2 (Pacman): demo_slot accepts poster_src, a real image for the phone poster.
+
+  Small reusable HTML pieces ("macros"), so pages don't repeat the same code.
+  A macro works like a Python function: you call it and it returns HTML.
+  Pages load them with:  {% from "_components.html" import card, picture, demo_slot, social_link, lang_chip %}
+#}
+
+{# picture: an image frame. If the image file is missing, a striped
+   placeholder with a label shows instead (so you can add photos later). #}
+{% macro picture(label, src=none, alt="", caption=none) %}
+<figure class="picture">
+    <div class="picture-frame" {% if not src %}role="img" aria-label="{{ alt or label }}"{% endif %}>
+        <span class="picture-fallback" aria-hidden="true">{{ label }}</span>
+        {% if src %}
+        <img src="{{ url_for('static', filename=src) }}" alt="{{ alt }}"
+             onerror="this.remove()">
+        {% endif %}
+    </div>
+    {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
+</figure>
+{% endmacro %}
+
+{# card: a content block with a Show/Hide button (Bootstrap "collapse").
+   Use it with {% call card("my-id", "Title") %} ...content... {% endcall %}.
+   The id must be unique on the page. #}
+{% macro card(id, title, open=true) %}
+<section class="card-block" aria-labelledby="{{ id }}-title">
+    <div class="card-block-head">
+        <h2 id="{{ id }}-title">{{ title }}</h2>
+        <button class="btn btn-toggle" type="button"
+                data-bs-toggle="collapse" data-bs-target="#{{ id }}-body"
+                aria-expanded="{{ 'true' if open else 'false' }}"
+                aria-controls="{{ id }}-body">
+            <span class="toggle-open">Hide</span>
+            <span class="toggle-closed">Show</span>
+        </button>
+    </div>
+    <div class="collapse{{ ' show' if open }}" id="{{ id }}-body">
+        <div class="card-copy">{{ caller() }}</div>
+    </div>
+</section>
+{% endmacro %}
+
+{# demo_slot: the "stage" for a page's interactive demo.
+   - Plain use  {{ demo_slot(...) }}  shows a poster placeholder ("coming soon").
+   - Live use   {% call demo_slot(..., status="Live demo") %} ...demo HTML... {% endcall %}
+     shows the demo from tablet size up (768px+); phones see the poster and the
+     "best on desktop" note instead. #}
+{% macro demo_slot(id, title, poster_label, text, status="Demo coming soon", poster_src=none) %}
+<section class="demo-slot" id="{{ id }}" aria-labelledby="{{ id }}-title">
+    <div class="demo-bar">
+        <span class="demo-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <h2 id="{{ id }}-title">{{ title }}</h2>
+        <span class="demo-status">{{ status }}</span>
+    </div>
+    {% if caller %}
+    <div class="demo-live d-none d-md-block">{{ caller() }}</div>
+    {% endif %}
+    <div class="demo-stage{{ ' d-md-none' if caller }}">
+        <div class="demo-poster" role="img" aria-label="{{ poster_label }}">
+            <span aria-hidden="true">{{ poster_label }}</span>
+            {% if poster_src %}<img src="{{ url_for('static', filename=poster_src) }}" alt="" onerror="this.remove()">{% endif %}
+        </div>
+    </div>
+    <p class="demo-note">{{ text }}</p>
+    <p class="desktop-note {{ 'd-md-none' if caller else 'd-lg-none' }}">Best on desktop. On phones you'll see the poster instead.</p>
+</section>
+{% endmacro %}
+
+{# social_link: an icon + text link (GitHub, LinkedIn, Email).
+   kind = file name in static/icons/social/ without ".svg" (github, linkedin, email).
+   The icon is a "mask": it takes the text colour, so one CSS rule tones every
+   icon to match the theme. Works with any SVG/PNG that has a transparent
+   background and one solid shape.
+   tile=true gives the big boxed version used on the home page. #}
+{% macro social_link(kind, href, label, handle=none, tile=false) %}
+<a class="social{{ ' social-tile' if tile }}" href="{{ href }}"
+   {% if kind != 'email' %}target="_blank" rel="noreferrer"{% endif %}>
+    <span class="icon" aria-hidden="true"
+          style="--icon: url('{{ url_for('static', filename='icons/social/' ~ kind ~ '.svg') }}')"></span>
+    <span class="social-text">
+        <span class="social-label">{{ label }}</span>
+        {# <wbr> lets an email wrap right after the @ instead of mid-word #}
+        {% if handle %}<span class="social-handle">{{ handle | e | replace('@', '@<wbr>' | safe) }}</span>{% endif %}
+    </span>
+</a>
+{% endmacro %}
+
+{# lang_chip: a language/tool tag with its original-colour logo.
+   icon = file name inside static/icons/langs/ (e.g. "python.svg", or your own
+   "python.png"). Leave it out and you get a plain text chip. #}
+{% macro lang_chip(name, icon=none) %}
+<li class="chip chip-lang">
+    {% if icon %}<img src="{{ url_for('static', filename='icons/langs/' ~ icon) }}" alt="" width="20" height="20">{% endif %}
+    {{ name }}
+</li>
+{% endmacro %}

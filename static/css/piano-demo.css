@@ -1,0 +1,148 @@
+/*
+  AI-ASSISTED FILE (CS50x final project): written by Claude (Anthropic).
+  Restyle of Ian's styles.css for the chord player, loaded only on the piano page.
+
+  ORIGINAL: base styles came from the same AI-summary / website source as the piano HTML.
+    CLAUDE'S CHANGES: restyled it to match the site and scoped every rule to .chord-player
+    so it cannot affect other pages.
+
+  Changes from the original:
+    - Everything is scoped under .chord-player, so it cannot affect the rest of the site.
+    - Page-level rules (body, .page, *) removed; the site layout handles those.
+    - Duplicate rules merged. Colours come from theme.css variables, so pressed keys
+      and buttons use the page accent (amber).
+    - No pure white / near-black: key tones softened a little.
+    - Small labels enlarged for readability. The chord panels switch to one column
+      when the demo itself is narrow (container query), not only when the window is.
+*/
+
+.chord-player {
+    container-type: inline-size;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);   /* the column may shrink below its content, so the keyboard scrolls instead of being cut off */
+    gap: 1.1rem;
+    padding: clamp(0.9rem, 2vw, 1.4rem);
+}
+.chord-player * { box-sizing: border-box; }
+.chord-player > * { min-width: 0; }
+
+/* ---------- piano body ---------- */
+.chord-player .cp-piano {
+    padding: 1.25rem 1.4rem 0.9rem;
+    background: linear-gradient(145deg, #26292e, #1a1c20);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+.chord-player .cp-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 1rem; margin-bottom: 1.1rem;
+}
+.chord-player .cp-title {
+    margin: 0; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 0.95rem; letter-spacing: 0.18em;
+}
+.chord-player .cp-sub {
+    margin: 0.3rem 0 0; color: var(--muted);
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em;
+}
+.chord-player .cp-status {
+    min-height: 1.2em; max-width: 60%;
+    text-align: right; color: var(--accent-text);
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.1em;
+}
+.chord-player .cp-footer {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem;
+    margin-top: 0.9rem; color: var(--muted);
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em;
+}
+
+/* ---------- keyboard ---------- */
+.chord-player .cp-keyboard-wrapper { width: 100%; overflow-x: auto; padding-bottom: 5px; }
+.chord-player .cp-keyboard {
+    position: relative; display: flex;
+    width: 100%; min-width: 560px; height: 260px;
+    background: #15171a; border-radius: 4px; overflow: hidden;
+}
+
+.chord-player .white-key {
+    position: relative; flex: 1; height: 100%;
+    display: flex; justify-content: center; align-items: flex-end;
+    padding: 0 0 18px;
+    background: linear-gradient(to right, #e5e2da 0%, #f4f1ea 50%, #e0ddd5 100%);
+    border: 0; border-right: 1px solid #a9a79f; border-bottom: 4px solid #a9a79f;
+    border-radius: 0 0 5px 5px;
+    cursor: pointer; user-select: none;
+    transition: background 0.06s, transform 0.06s;
+}
+.chord-player .white-key:hover { background: linear-gradient(to right, #ece9e2, #f6f3ec, #e5e2da); }
+.chord-player .white-key.active {
+    background: color-mix(in srgb, var(--accent) 30%, #d9d6cf);
+    border-bottom-width: 1px; border-bottom-color: var(--accent);
+    transform: translateY(3px);
+}
+
+.chord-player .black-key {
+    position: absolute; top: 0; z-index: 10;
+    display: flex; align-items: flex-end; justify-content: center;
+    width: 5.2%; height: 62%; padding: 0 0 13px;
+    transform: translateX(-50%);
+    background: linear-gradient(to right, #15171a, #34373d, #15171a);
+    border: 1px solid #0f1012; border-bottom: 5px solid #0f1012;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 2px 5px 7px rgba(0, 0, 0, 0.4);
+    color: var(--text);
+    cursor: pointer; user-select: none;
+    transition: background 0.06s, transform 0.06s;
+}
+.chord-player .black-key:hover { background: linear-gradient(to right, #1c1e22, #494c53, #1c1e22); }
+.chord-player .black-key.active {
+    background: linear-gradient(to right,
+        color-mix(in srgb, var(--accent) 55%, #15171a),
+        var(--accent),
+        color-mix(in srgb, var(--accent) 55%, #15171a));
+    border-bottom-width: 2px;
+    transform: translate(-50%, 3px);
+}
+
+.chord-player .note-label {
+    color: #444; font-size: 0.78rem; font-weight: 700; pointer-events: none;
+}
+.chord-player .black-key .note-label { color: var(--text); font-size: 0.7rem; }
+.chord-player .black-key.active .note-label { color: var(--accent-ink); }
+
+/* ---------- chord buttons ---------- */
+.chord-player .cp-chords {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;
+    padding: 1.1rem;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+}
+.chord-player .cp-chord-group { display: flex; flex-wrap: wrap; gap: 0.4rem; align-content: flex-start; }
+.chord-player .cp-chord-group h3 {
+    width: 100%; margin: 0 0 0.35rem;
+    color: var(--text); font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase;
+}
+.chord-player .cp-chord-group button {
+    padding: 0.5rem 0.7rem;
+    background: var(--surface-2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 5px;
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+    cursor: pointer; user-select: none;
+    transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.08s;
+}
+.chord-player .cp-chord-group button:hover { border-color: var(--accent); background: var(--accent-dim); }
+.chord-player .cp-chord-group button:active,
+.chord-player .cp-chord-group button.active {
+    background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+    transform: translateY(2px);
+}
+
+@container (max-width: 640px) {
+    .chord-player .cp-chords { grid-template-columns: 1fr; }
+}
+/* narrow demo: slightly smaller key labels so they still fit */
+@container (max-width: 620px) {
+    .chord-player .note-label { font-size: 0.68rem; }
+    .chord-player .black-key .note-label { font-size: 0.58rem; }
+    .chord-player .cp-keyboard { height: 230px; }
+}

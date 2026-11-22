@@ -1,0 +1,92 @@
+{#
+  AI-ASSISTED FILE (CS50x final project): written by Claude (Anthropic).
+  Changed in Stage 1 feedback round: two-column layout, language logos.
+  Poster round: hero picture is the topic illustration static/image/cs-topic.png (the Pacman poster is still used as the phone fallback inside the demo).
+  Changed in Stage 2 (Pacman, round 2): sound, levels, terminal/arcade skins, leaderboard panel.
+  Changed in Stage 2 (Pacman): live browser Pacman in the demo slot, demo full width
+  with the tools card underneath (the game is wide, like the piano page).
+  Text adapted from Ian's pset 8 "programming" page and lightly rephrased.
+  Ian's own text about the Pacman project is in the "About this project" card below (it used to sit in this comment, where visitors could not see it).
+#}
+{% extends "layout.html" %}
+{% from "_components.html" import card, picture, demo_slot, lang_chip %}
+
+{% block title %}Computer Science{% endblock %}
+{% block head_extra %}<link href="{{ url_for('static', filename='css/pacman-demo.css') }}" rel="stylesheet">{% endblock %}
+{% block theme %}cs{% endblock %}
+
+{% block main %}
+<div class="wrap">
+
+    <section class="page-hero" aria-labelledby="page-title">
+        <div class="row align-items-center g-4 g-lg-5">
+            <div class="col-lg-7">
+                <h1 id="page-title">Computer Science</h1>
+                <p class="lead-text">
+                    I learn by building things and then working out why they behave the
+                    way they do. Here are the tools I use and a game you can look inside.
+                </p>
+                <ul class="chip-row">
+                    <li class="chip chip-accent">CS50x</li>
+                    <li class="chip">Python</li>
+                    <li class="chip">Learning by building</li>
+                </ul>
+            </div>
+            <div class="col-lg-5">
+                {{ picture("Computer Science", src="image/cs-topic.png", alt="Python code in an editor and its output in a terminal", caption="Learning by building, one small program at a time.") }}
+            </div>
+        </div>
+    </section>
+
+    <div class="stack pb-5">
+        {% call demo_slot("pacman-demo", "Pacman",
+                     "Pacman poster",
+                     "My terminal Pacman, ported to JavaScript so it runs right here. Arrows or WASD to move, Space to pause.",
+                     status="Live demo", poster_src="image/pacman-poster.png") %}
+            {# The game itself. static/js/pacman-init.js builds it inside this div. #}
+            <div id="pacman-root"
+                 data-score-url="/api/score"
+                 data-board-url="/api/leaderboard"
+                 data-login-url="{{ url_for('login') }}"
+                 data-register-url="{{ url_for('register') }}"
+                 data-user="{{ session.get('username', '') }}"></div>
+            {# Top 10 scores: pacman-init.js fills this from Flask. #}
+            <div id="pacman-board" class="pm-board"></div>
+        {% endcall %}
+
+        {% call card("about-pacman", "About this project") %}
+            <p>The python's version of this Pac-Man is one of my earliest project that I like which balances creativity, personality, real world usage, and professionality.</p>
+            <p>Though most of my key and user input is handled by AI agent, I am responsible for researching, translating to python, applying, and then testing the algorithm of this project in the original python.</p>
+            <p>This project was made at my transition stage, where I vaguely begin to reach what true computer scientist is able to do.</p>
+        {% endcall %}
+
+        {% call card("tools", "Languages and tools") %}
+            <h3>Languages</h3>
+            <ul class="chip-row mt-2 mb-4">
+                {{ lang_chip("Python", "python.svg") }}
+                {{ lang_chip("C", "c.svg") }}
+                {{ lang_chip("JavaScript", "javascript.svg") }}
+                {{ lang_chip("SQL", "sqlite.svg") }}
+                {{ lang_chip("Scratch", "scratch.svg") }}
+            </ul>
+            <h3>Web</h3>
+            <ul class="chip-row mt-2 mb-4">
+                {{ lang_chip("HTML", "html5.svg") }}
+                {{ lang_chip("CSS", "css3.svg") }}
+            </ul>
+            <h3>Tools</h3>
+            <ul class="chip-row mt-2">
+                {{ lang_chip("Git", "git.svg") }}
+            </ul>
+        {% endcall %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pacman-sound.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/pacman-game.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/pacman-view.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/pacman-init.js') }}" defer></script>
+{% endblock %}

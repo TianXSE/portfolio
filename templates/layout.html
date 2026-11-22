@@ -1,0 +1,103 @@
+{#
+  AI-ASSISTED FILE (CS50x final project): written by Claude (Anthropic).
+  Changed in Stage 1 feedback round: full-width header/footer, icons, background shapes.
+  Changed in Stage 2 (piano): added the head_extra block.
+  Changed in login round: navbar shows Log in / Register, or a username chip and Log out (reads Flask's session).
+  The account links sit after a thin divider (nav-sep) so they read as separate from the page links.
+
+  layout.html = the shared page frame (head, navbar, footer).
+  Every page starts with {% extends "layout.html" %} and fills in the blocks:
+    title  -> text in the browser tab
+    theme  -> which colour theme: index, cs, math or piano (see theme.css)
+    main   -> the page content
+    head_extra -> page-specific CSS (the piano page loads piano-demo.css here)
+    scripts-> page-specific JavaScript (the piano page loads piano-demo.js here)
+
+  Flask needs view functions named: index, cs, math_physics, piano, login, register, logout
+  (the navbar uses url_for() with those names).
+-#}
+{% import "_site.html" as s -%}
+{% from "_components.html" import social_link -%}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#1c1e22">
+    <meta name="description" content="{{ s.site.name }}'s portfolio: computer science, math &amp; physics, and piano projects.">
+    <title>{% block title %}{% endblock %} | {{ s.site.name }}'s Portfolio</title>
+
+    <!-- Bootstrap CSS first, then our theme so our rules can override it. -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/theme.css') }}" rel="stylesheet">
+    {% block head_extra %}{% endblock %}
+
+    <!-- Bootstrap JS powers the mobile menu and the Show/Hide buttons. -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" defer></script>
+</head>
+<body class="theme-{% block theme %}index{% endblock %}">
+    {# Background shapes: fixed behind everything; their look changes per theme (theme.css) #}
+    <div class="page-deco" aria-hidden="true">
+        <span class="pd pd-dark"></span>
+        <span class="pd pd-glow"></span>
+        <span class="pd pd-ring"></span>
+        <span class="pd pd-dots"></span>
+    </div>
+
+    <a class="visually-hidden-focusable skip-link" href="#main">Skip to content</a>
+
+    <nav class="navbar navbar-expand-lg site-navbar">
+        <div class="container-fluid wrap">
+            <a class="navbar-brand" href="{{ url_for('index') }}">{{ s.site.name | upper }}<span class="brand-slash">/</span>PORTFOLIO</a>
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {# (endpoint name, label) pairs; the loop builds each link #}
+                    {% for endpoint, label in [
+                        ('index', 'Home'),
+                        ('cs', 'Computer Science'),
+                        ('math_physics', 'Math & Physics'),
+                        ('piano', 'Piano')] %}
+                    <li class="nav-item">
+                        <a class="nav-link{{ ' active' if request.endpoint == endpoint }}"
+                           {% if request.endpoint == endpoint %}aria-current="page"{% endif %}
+                           href="{{ url_for(endpoint) }}">{{ label }}</a>
+                    </li>
+                    {% endfor %}
+                    {# account links: session is Flask's cookie dictionary; username is set by your log_in() #}
+                    {% if session.get('username') %}
+                    <li class="nav-item nav-sep"><span class="nav-link nav-user" title="Signed in as {{ session['username'] }}">{{ session['username'] }}</span></li>
+                    <li class="nav-item"><a class="nav-link nav-logout" href="{{ url_for('logout') }}">Log out</a></li>
+                    {% else %}
+                    <li class="nav-item nav-sep"><a class="nav-link{{ ' active' if request.endpoint == 'login' }}" href="{{ url_for('login') }}">Log in</a></li>
+                    <li class="nav-item"><a class="nav-link nav-cta{{ ' active' if request.endpoint == 'register' }}" href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main">
+        {% block main %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <p class="mb-0">Built by {{ s.site.name }}, {{ s.site.year }}. A CS50x final project.</p>
+            <div class="footer-links d-flex flex-wrap gap-4">
+                {{ social_link("github", s.site.github, "GitHub") }}
+                {{ social_link("linkedin", s.site.linkedin, "LinkedIn") }}
+                {{ social_link("email", "mailto:" ~ s.site.email, "Email") }}
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

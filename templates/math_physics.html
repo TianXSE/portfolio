@@ -1,0 +1,149 @@
+{#
+  AI-ASSISTED FILE (CS50x final project): written by Claude (Anthropic).
+  Changed in Stage 1 feedback round: two-column layout.
+  Changed in Stage 2: live 3D renderer in the demo slot (the demo column is no longer sticky, because it is tall);
+  flat and donut styles.
+  Poster round: hero picture is the topic illustration static/image/math-topic.png; the phone poster for the demo is static/image/renderer-poster.png (a tilted donut; swap either file any time).
+  Text adapted from Ian's pset 8 "physics" page and rephrased: same story and
+  voice, tidier wording. Cut any line you don't want public (for example the
+  "eighteen hours a day" sentence).
+#}
+{% extends "layout.html" %}
+{% from "_components.html" import card, picture, demo_slot %}
+
+{% block title %}Math &amp; Physics{% endblock %}
+{% block head_extra %}<link href="{{ url_for('static', filename='css/renderer-demo.css') }}" rel="stylesheet">{% endblock %}
+{% block theme %}math{% endblock %}
+
+{% block main %}
+<div class="wrap">
+
+    <section class="page-hero" aria-labelledby="page-title">
+        <div class="row align-items-center g-4 g-lg-5">
+            <div class="col-lg-7">
+                <h1 id="page-title">Math &amp; Physics</h1>
+                <p class="lead-text">
+                    A different way to read the universe: start with logic, add
+                    observation, and turn complexity into rules.
+                </p>
+                <ul class="chip-row">
+                    <li class="chip chip-accent">Olympiad background</li>
+                    <li class="chip">Logic first</li>
+                    <li class="chip">Abstraction</li>
+                    <li class="chip">Observation</li>
+                </ul>
+            </div>
+            <div class="col-lg-5">
+                {{ picture("Math & Physics", src="image/math-topic.png", alt="A sine wave, an orbit and famous equations on a blueprint grid") }}
+            </div>
+        </div>
+    </section>
+
+    <div class="split pb-5">
+        <div>
+        {% call demo_slot("renderer-demo", "3D terminal renderer",
+                     "3D terminal renderer",
+                     "Pick an example or type your own equation using x, y and z. Python builds the model once; your browser then spins it and draws it in characters.",
+                     status="Live demo", poster_src="image/renderer-poster.png") %}
+            {# The renderer itself. static/js/renderer-demo.js draws it; the model comes from /api/model (Ian's Python) or an example file. #}
+            <div class="renderer" id="renderer">
+                <form class="rd-controls" id="rd-form" autocomplete="off">
+                    <div>
+                        <label for="rd-formula">Equation</label>
+                        <div class="rd-row">
+                            <input id="rd-formula" type="text" value="x^2 + y^2 + z^2 = 25"
+                                   maxlength="200" spellcheck="false">
+                            <button type="submit" class="btn btn-accent" id="rd-render">Render</button>
+                        </div>
+                        <p class="rd-hint">Use x, y, z, + - * / and ^ (powers from -20 to 20), brackets, and exactly one "=" sign.</p>
+                    </div>
+
+                    <div>
+                        <span class="rd-label" id="rd-examples-label">Examples (instant)</span>
+                        <div class="rd-examples" role="group" aria-labelledby="rd-examples-label">
+                            <button type="button" class="rd-example" data-formula="x^2 + y^2 + z^2 = 25"
+                                    data-file="{{ url_for('static', filename='data/models/sphere.json') }}">Sphere</button>
+                            <button type="button" class="rd-example" data-formula="(x^2 + y^2 + z^2 + 21)^2 = 150*(x^2 + y^2)"
+                                    data-file="{{ url_for('static', filename='data/models/torus.json') }}">Torus</button>
+                            <button type="button" class="rd-example" data-formula="x^2 + y^2 = z"
+                                    data-file="{{ url_for('static', filename='data/models/paraboloid.json') }}">Paraboloid</button>
+                            <button type="button" class="rd-example" data-formula="x^2 + y^2 - z^2 = 4"
+                                    data-file="{{ url_for('static', filename='data/models/hyperboloid.json') }}">Hyperboloid</button>
+                        </div>
+                    </div>
+
+                    <fieldset class="rd-mode">
+                        <legend class="rd-label">Style</legend>
+                        <label class="rd-radio"><input type="radio" name="rd-mode" value="flat" checked> Flat (characters only)</label>
+                        <label class="rd-radio"><input type="radio" name="rd-mode" value="donut"> Donut (colour)</label>
+                    </fieldset>
+
+                    <div>
+                        <label for="rd-speed">Rotation speed: <output id="rd-speed-out" for="rd-speed">1.0</output> rad/s</label>
+                        <input id="rd-speed" type="range" min="-3" max="3" step="0.1" value="1">
+                    </div>
+
+                    <div class="rd-row">
+                        <button type="button" class="btn btn-ghost" id="rd-pause" aria-pressed="false">Pause</button>
+                        <button type="button" class="btn btn-ghost" id="rd-resprinkle" hidden>Re-sprinkle</button>
+                    </div>
+
+                    <p class="rd-status" id="rd-status" role="status" aria-live="polite">Loading example...</p>
+                </form>
+
+                <div class="rd-display">
+                    <canvas id="rd-canvas" role="img"
+                            aria-label="A shape drawn in text characters, slowly rotating"></canvas>
+                </div>
+            </div>
+        {% endcall %}
+        </div>
+
+        <div class="stack">
+            {% call card("physics", "Physics") %}
+                <p>
+                    To me, physics is the part of science that feels most like art. Art
+                    lets us appreciate the universe through what we see and hear;
+                    physics explains the rules underneath that make it possible.
+                </p>
+                <p>It doesn't change what we see. It changes how we look.</p>
+                <p>
+                    My interest began around high school, maybe a little earlier. I
+                    already had a solid base in math, and classmates often turned to me
+                    when formulas appeared. Then I read about people like Einstein and
+                    got hooked on how strangely well mathematics describes reality.
+                </p>
+            {% endcall %}
+
+            {% call card("math", "Math") %}
+                <p>
+                    People around me say I'm good with numbers, and I see why. But being
+                    called good at something doesn't stop you from comparing yourself,
+                    and meeting real prodigies has made me question my own level more
+                    than once.
+                </p>
+                <p>
+                    I can't say when I started loving math, or whether I ever loved
+                    numbers themselves. One of my earliest memories is learning the
+                    abacus at around four or five, multiplying numbers into the
+                    hundreds and thousands. I didn't think much of it then, but that
+                    may be where it began.
+                </p>
+                <p>
+                    I'm not someone who grinds eighteen hours a day to prove a point,
+                    and I'm still learning to be consistent with what I care about.
+                    What I do enjoy is the mix of logic, numbers and abstraction, and
+                    the moment a problem that looked impossible starts to make sense.
+                    Maybe that matters more to me than being the best.
+                </p>
+            {% endcall %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/renderer-demo.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/renderer-extras.js') }}" defer></script>
+{% endblock %}
